@@ -1,0 +1,318 @@
+.admin-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-title h1 {
+  margin: 0;
+  color: #333;
+  font-size: 28px;
+}
+
+.admin-title p {
+  margin: 5px 0 0 0;
+  color: #666;
+}
+
+.btn-logout {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-logout:hover {
+  background: #ff3838;
+}
+
+.admin-content {
+  display: flex;
+  gap: 30px;
+}
+
+.admin-sidebar {
+  flex: 0 0 220px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+.btn-action {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-action:hover {
+  background: #5568d3;
+}
+
+.btn-action.active {
+  background: #764ba2;
+}
+
+.hostel-count {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.admin-main {
+  flex: 1;
+}
+
+.add-hostel-form,
+.import-hostels-form {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-hostel-form h2,
+.import-hostels-form h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.add-hostel-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-hostel-form input,
+.add-hostel-form textarea,
+.import-hostels-form textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-submit,
+.btn-cancel,
+.btn-edit,
+.btn-delete {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-submit {
+  background: #2ed573;
+  color: white;
+}
+
+.btn-submit:hover {
+  background: #1db95a;
+}
+
+.btn-cancel {
+  background: #ffa502;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: #ff8c00;
+}
+
+.btn-edit {
+  background: #1e90ff;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #1873cc;
+}
+
+.btn-delete {
+  background: #ff4757;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #ff3838;
+}
+
+.import-msg {
+  margin-top: 10px;
+  padding: 10px;
+  background: #e8f5e9;
+  border-left: 4px solid #2ed573;
+  border-radius: 3px;
+  color: #2e7d32;
+}
+
+.hostels-list {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hostels-list h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.no-hostels {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 16px;
+}
+
+.admin-hostels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.admin-hostel-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.card-content h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.info-group,
+.contact-group,
+.amenities-group,
+.rooms-group {
+  margin-bottom: 10px;
+}
+
+.info-group p,
+.contact-group p {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.amenities-list,
+.rooms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.amenity-badge {
+  background: #667eea;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.room-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.room-item img {
+  width: 40px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+  .admin-content {
+    flex-direction: column;
+  }
+  
+  .admin-sidebar {
+    flex: 1;
+  }
+  
+  .admin-hostels-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .admin-title h1 {
+    font-size: 22px;
+  }
+}
