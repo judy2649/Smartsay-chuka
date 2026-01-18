@@ -1,28 +1,13 @@
 {
-  "builds": [
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "web",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "web/$1"
-    }
-  ],
+  "buildCommand": "cd web && npm install && npm run build",
+  "outputDirectory": "web/build",
+  "installCommand": "npm install --legacy-peer-deps",
   "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "NODE_ENV": "production"
+    "REACT_APP_API_URL": "@REACT_APP_API_URL"
+  },
+  "functions": {
+    "api/**.js": {
+      "runtime": "nodejs18.x"
+    }
   }
 }
