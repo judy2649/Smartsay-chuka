@@ -1,0 +1,32 @@
+{
+  "env": [
+    {
+      "name": "MONGODB_URI",
+      "value": "mongodb+srv://jeanjudy663_db_user:AS2Mst5xQS7bXVtZ@cluster0.ag43qkt.mongodb.net/smartstay"
+    },
+    {
+      "name": "JWT_SECRET",
+      "value": "smartstay_chuka_secret_key_12345"
+    },
+    {
+      "name": "MPESA_CONSUMER_KEY",
+      "value": "W1t82CvAoTMUAtYNAZNGs0GAR2k2coVyT8HETzQtITVqpWmM"
+    },
+    {
+      "name": "MPESA_CONSUMER_SECRET",
+      "value": "QbPw1qmM4tz19JCJwaHwVE7julAUFTSb5ZJBI4Rh8TSGIxJ4auz65erPHZosIQHS"
+    },
+    {
+      "name": "MPESA_SHORTCODE",
+      "value": "174379"
+    },
+    {
+      "name": "NODE_ENV",
+      "value": "production"
+    },
+    {
+      "name": "PORT",
+      "value": "3000"
+    }
+  ]
+}
