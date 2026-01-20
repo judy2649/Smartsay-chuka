@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { hostelService } from '../services/api';
 import '../styles/Home.css';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [hostels, setHostels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -39,7 +41,7 @@ const Home = () => {
           <h2>🔒 Unlock SMARTSTAY CHUKA</h2>
           <p>Subscribe to view all hostels and their information</p>
           <p className="price">KES 263 for 30 days</p>
-          <a href="/payment" className="btn btn-primary">Subscribe Now</a>
+          <button onClick={() => navigate('/payment')} className="btn btn-primary">Subscribe Now</button>
         </div>
       </div>
     );

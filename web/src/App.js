@@ -48,19 +48,26 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Admin routes - no navbar */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         
-        <Route path="*" element={<>
-          <Navbar />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </>} />
+        {/* Public/Protected routes with navbar */}
+        <Route 
+          path="*" 
+          element={
+            <>
+              <Navbar />
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+                <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </>
+          } 
+        />
       </Routes>
     </Router>
   );

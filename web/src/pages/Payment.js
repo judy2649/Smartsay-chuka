@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { paymentService } from '../services/api';
 import '../styles/Payment.css';
 
 const Payment = () => {
+  const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,17 +26,22 @@ const Payment = () => {
         try {
           await paymentService.confirmMockPayment();
         } catch (err) {
+          console.log('Mock payment confirmation error (expected in some cases):', err.message);
           // ignore errors; still proceed to mark locally
         }
 
         // Mark user subscribed in local storage and redirect
         const updatedUser = { ...user, isSubscribed: true };
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        setTimeout(() => window.location.href = '/', 1000);
+        
+        // Wait a moment for user to see success message, then navigate
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 1500);
         setPhoneNumber('');
     } catch (err) {
+      console.error('Payment error:', err);
       setError(err.response?.data?.message || 'Payment initiation failed');
-    } finally {
       setLoading(false);
     }
   };
