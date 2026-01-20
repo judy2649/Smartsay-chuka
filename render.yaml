@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    startCommand: cd backend && node server.js
     envVars:
       - key: MONGODB_URI
         value: mongodb+srv://jeanjudy663_db_user:AS2Mst5xQS7bXVtZ@cluster0.ag43qkt.mongodb.net/smartstay?retryWrites=true&w=majority&appName=Cluster0
