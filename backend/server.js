@@ -87,6 +87,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ message: 'SMARTSTAY CHUKA Backend API', version: '1.0.0', status: 'running' });
+});
+
 // Test endpoint
 app.post('/api/test', (req, res) => {
   res.json({ message: 'POST test endpoint working', body: req.body });
