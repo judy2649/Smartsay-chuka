@@ -56,6 +56,15 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
+// Catch-all for debugging 404s
+app.get('*', (req, res) => {
+  res.status(404).json({ 
+    message: 'Route not found', 
+    path: req.path,
+    availableRoutes: ['/api/auth/login', '/api/auth/register', '/api/hostels', '/api/payments', '/api/health']
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 // Start server with error handling

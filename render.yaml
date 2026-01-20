@@ -1,5 +1,20 @@
 services:
   - type: web
+    name: smartstay-chuka-backend
+    runtime: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: JWT_SECRET
+        value: smartstay_chuka_secret_key_12345
+      - key: MONGODB_URI
+        value: mongodb+srv://jeanjudy663_db_user:AS2Mst5xQS7bXVtZ@cluster0.ag43qkt.mongodb.net/smartstay
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+  
+  - type: web
     name: smartstay-chuka-web
     runtime: node
     buildCommand: cd web && npm install && npm run build
