@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: smartstay-chuka-web
+    runtime: node
+    buildCommand: cd web && npm install && npm run build
+    startCommand: cd web && npm install -g serve && serve -s build -l 3000
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://smartstay-chukaapp.glitch.me/api
+      - key: CI
+        value: "false"
