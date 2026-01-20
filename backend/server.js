@@ -39,27 +39,47 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartstay
 console.log('📦 Loading routes...');
 try {
   const authRoutes = require('./routes/auth');
+  if (!authRoutes) throw new Error('Auth routes module is empty');
   app.use('/api/auth', authRoutes);
   console.log('✅ Auth routes loaded');
-  
+} catch (err) {
+  console.error('❌ Auth routes error:', err.message);
+}
+
+try {
   const hostelRoutes = require('./routes/hostels');
+  if (!hostelRoutes) throw new Error('Hostels routes module is empty');
   app.use('/api/hostels', hostelRoutes);
   console.log('✅ Hostels routes loaded');
-  
+} catch (err) {
+  console.error('❌ Hostels routes error:', err.message);
+}
+
+try {
   const paymentRoutes = require('./routes/payments');
+  if (!paymentRoutes) throw new Error('Payments routes module is empty');
   app.use('/api/payments', paymentRoutes);
   console.log('✅ Payments routes loaded');
-  
+} catch (err) {
+  console.error('❌ Payments routes error:', err.message);
+}
+
+try {
   const subscriptionRoutes = require('./routes/subscriptions');
+  if (!subscriptionRoutes) throw new Error('Subscriptions routes module is empty');
   app.use('/api/subscriptions', subscriptionRoutes);
   console.log('✅ Subscriptions routes loaded');
-  
+} catch (err) {
+  console.error('❌ Subscriptions routes error:', err.message);
+}
+
+try {
   const userRoutes = require('./routes/users');
+  if (!userRoutes) throw new Error('Users routes module is empty');
   app.use('/api/users', userRoutes);
   console.log('✅ Users routes loaded');
 } catch (err) {
-  console.error('❌ Error loading routes:', err.message);
-  console.error('Stack:', err.stack);
+  console.error('❌ Users routes error:', err.message);
 }
 
 // Health check
@@ -78,7 +98,7 @@ app.all('*', (req, res) => {
     message: 'Route not found', 
     method: req.method,
     path: req.path,
-    availableRoutes: ['/api/auth/login', '/api/auth/register', '/api/hostels', '/api/payments', '/api/health']
+    availableRoutes: ['/api/auth/login', '/api/auth/register', '/api/hostels', '/api/payments', '/api/health', '/api/test']
   });
 });
 
