@@ -18,6 +18,11 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
+// Allow all origins in production (Render will handle security)
+if (process.env.NODE_ENV === 'production') {
+  corsOptions.origin = '*';
+}
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
