@@ -56,10 +56,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
-// Catch-all for debugging 404s
-app.get('*', (req, res) => {
+// Catch-all for debugging 404s (handle all methods)
+app.all('*', (req, res) => {
   res.status(404).json({ 
     message: 'Route not found', 
+    method: req.method,
     path: req.path,
     availableRoutes: ['/api/auth/login', '/api/auth/register', '/api/hostels', '/api/payments', '/api/health']
   });
