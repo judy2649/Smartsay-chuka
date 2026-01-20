@@ -35,51 +35,57 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartstay
     console.log('⚠️ Running in mock mode - database features limited');
   });
 
-// Routes
+// Routes - Import and register each separately
 console.log('📦 Loading routes...');
+
+// Try to load auth routes
 try {
-  const authRoutes = require('./routes/auth');
-  if (!authRoutes) throw new Error('Auth routes module is empty');
-  app.use('/api/auth', authRoutes);
-  console.log('✅ Auth routes loaded');
-} catch (err) {
-  console.error('❌ Auth routes error:', err.message);
+  console.log('Loading /api/auth...');
+  const auth = require('./routes/auth');
+  app.use('/api/auth', auth);
+  console.log('✅ /api/auth loaded');
+} catch (e) {
+  console.error('❌ /api/auth failed:', e.message);
 }
 
+// Try to load hostels routes
 try {
-  const hostelRoutes = require('./routes/hostels');
-  if (!hostelRoutes) throw new Error('Hostels routes module is empty');
-  app.use('/api/hostels', hostelRoutes);
-  console.log('✅ Hostels routes loaded');
-} catch (err) {
-  console.error('❌ Hostels routes error:', err.message);
+  console.log('Loading /api/hostels...');
+  const hostels = require('./routes/hostels');
+  app.use('/api/hostels', hostels);
+  console.log('✅ /api/hostels loaded');
+} catch (e) {
+  console.error('❌ /api/hostels failed:', e.message);
 }
 
+// Try to load payments routes
 try {
-  const paymentRoutes = require('./routes/payments');
-  if (!paymentRoutes) throw new Error('Payments routes module is empty');
-  app.use('/api/payments', paymentRoutes);
-  console.log('✅ Payments routes loaded');
-} catch (err) {
-  console.error('❌ Payments routes error:', err.message);
+  console.log('Loading /api/payments...');
+  const payments = require('./routes/payments');
+  app.use('/api/payments', payments);
+  console.log('✅ /api/payments loaded');
+} catch (e) {
+  console.error('❌ /api/payments failed:', e.message);
 }
 
+// Try to load subscriptions routes
 try {
-  const subscriptionRoutes = require('./routes/subscriptions');
-  if (!subscriptionRoutes) throw new Error('Subscriptions routes module is empty');
-  app.use('/api/subscriptions', subscriptionRoutes);
-  console.log('✅ Subscriptions routes loaded');
-} catch (err) {
-  console.error('❌ Subscriptions routes error:', err.message);
+  console.log('Loading /api/subscriptions...');
+  const subscriptions = require('./routes/subscriptions');
+  app.use('/api/subscriptions', subscriptions);
+  console.log('✅ /api/subscriptions loaded');
+} catch (e) {
+  console.error('❌ /api/subscriptions failed:', e.message);
 }
 
+// Try to load users routes
 try {
-  const userRoutes = require('./routes/users');
-  if (!userRoutes) throw new Error('Users routes module is empty');
-  app.use('/api/users', userRoutes);
-  console.log('✅ Users routes loaded');
-} catch (err) {
-  console.error('❌ Users routes error:', err.message);
+  console.log('Loading /api/users...');
+  const users = require('./routes/users');
+  app.use('/api/users', users);
+  console.log('✅ /api/users loaded');
+} catch (e) {
+  console.error('❌ /api/users failed:', e.message);
 }
 
 // Health check
