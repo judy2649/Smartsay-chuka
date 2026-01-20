@@ -29,7 +29,7 @@ const updateMockUserSubscription = (id, subscribed = true, expiryDate = null) =>
   return true;
 };
 
-module.exports._mock = { mockUsers, findMockUserById, findMockUserByEmail, updateMockUserSubscription };
+exports._mock = { mockUsers, findMockUserById, findMockUserByEmail, updateMockUserSubscription };
 
 exports.register = async (req, res) => {
   try {
