@@ -21,6 +21,6 @@ services:
     startCommand: cd web && npm install -g serve && serve -s build -l 3000
     envVars:
       - key: REACT_APP_API_URL
-        value: https://smartsay-chuka-1.onrender.com/api
+        value: https://smartsay-chuka-backend.onrender.com/api
       - key: CI
         value: "false"
