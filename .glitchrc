@@ -1,0 +1,5 @@
+{
+  "installDir": "backend",
+  "buildDir": "backend",
+  "start": "node backend/test-server.js"
+}

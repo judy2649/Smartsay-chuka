@@ -26,12 +26,22 @@ const Register = () => {
     setError('');
 
     try {
+      console.log('Sending registration request with:', formData);
       const response = await authService.register(formData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      navigate('/payment');
+      console.log('Registration response:', response.data);
+      
+      if (response.data.token && response.data.user) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        console.log('User stored in localStorage, navigating to payment...');
+        navigate('/payment');
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      const errorMessage = err.response?.data?.message || err.message || 'Registration failed';
+      console.error('Registration error:', errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
