@@ -1,4 +1,5 @@
 routes:
-  - type: rewrite
-    source: "/*"
+  - path: "/*"
+    methods:
+      - GET
     destination: "/index.html"
