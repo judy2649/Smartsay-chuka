@@ -14,22 +14,30 @@
 }
 
 .logo {
-  color: white;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-size: 20px;
   font-weight: bold;
+  text-shadow: 0 2px 8px rgba(240, 147, 251, 0.3);
 }
 
 .nav-items {
   display: flex;
   align-items: center;
   gap: 20px;
-  color: white;
+  color: #f093fb;
 }
 
 .nav-items a {
-  color: white;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-decoration: none;
   font-size: 14px;
+  font-weight: 600;
   transition: opacity 0.3s;
 }
 
@@ -38,7 +46,8 @@
 }
 
 .badge {
-  background: #4caf50;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -46,17 +55,17 @@
 }
 
 .btn-logout {
-  background: white;
-  color: #667eea;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.3s;
+  transition: transform 0.3s;
 }
 
 .btn-logout:hover {
-  background: #f0f0f0;
+  transform: scale(1.05);
 }

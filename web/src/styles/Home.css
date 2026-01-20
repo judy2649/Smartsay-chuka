@@ -13,7 +13,7 @@
 
 .home-container h1 {
   font-size: 32px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 10px;
@@ -29,7 +29,10 @@
 .loading {
   text-align: center;
   padding: 60px 20px;
-  color: #667eea;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-size: 18px;
 }
 
@@ -93,7 +96,7 @@
 }
 
 .hostel-card h3 {
-  color: #667eea;
+  color: #f093fb;
   font-size: 20px;
   margin: 0 0 10px 0;
   font-weight: 700;
