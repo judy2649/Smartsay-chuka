@@ -13,6 +13,7 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,6 +25,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       console.log('Sending registration request with:', formData);
@@ -33,8 +35,15 @@ const Register = () => {
       if (response.data.token && response.data.user) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        console.log('User stored in localStorage, navigating to payment...');
-        navigate('/payment');
+        console.log('User stored in localStorage');
+        
+        setSuccess('✨ Registration successful! Redirecting to payment...');
+        console.log('User stored in localStorage, navigating to payment in 2 seconds...');
+        
+        // Wait 2 seconds to show success message, then redirect
+        setTimeout(() => {
+          navigate('/payment');
+        }, 2000);
       } else {
         throw new Error('Invalid response from server');
       }
@@ -42,7 +51,6 @@ const Register = () => {
       const errorMessage = err.response?.data?.message || err.message || 'Registration failed';
       console.error('Registration error:', errorMessage);
       setError(errorMessage);
-    } finally {
       setLoading(false);
     }
   };
@@ -53,6 +61,7 @@ const Register = () => {
         <h1>SMARTSTAY CHUKA</h1>
         <h2>Register</h2>
         {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -61,6 +70,7 @@ const Register = () => {
             value={formData.firstName}
             onChange={handleChange}
             required
+            disabled={loading}
           />
           <input
             type="text"
@@ -69,6 +79,7 @@ const Register = () => {
             value={formData.lastName}
             onChange={handleChange}
             required
+            disabled={loading}
           />
           <input
             type="email"
@@ -77,6 +88,7 @@ const Register = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={loading}
           />
           <input
             type="tel"
@@ -84,6 +96,7 @@ const Register = () => {
             placeholder="Phone Number (254...)"
             value={formData.phoneNumber}
             onChange={handleChange}
+            disabled={loading}
           />
           <input
             type="password"
@@ -92,9 +105,10 @@ const Register = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={loading}
           />
           <button type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? '⏳ Registering...' : '✨ Register'}
           </button>
         </form>
         <p>Already have an account? <a href="/login">Login here</a></p>
