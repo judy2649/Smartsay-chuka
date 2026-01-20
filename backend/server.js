@@ -36,24 +36,40 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartstay
   });
 
 // Routes
+console.log('📦 Loading routes...');
 try {
-  app.use('/api/auth', require('./routes/auth'));
+  const authRoutes = require('./routes/auth');
+  app.use('/api/auth', authRoutes);
   console.log('✅ Auth routes loaded');
-  app.use('/api/hostels', require('./routes/hostels'));
+  
+  const hostelRoutes = require('./routes/hostels');
+  app.use('/api/hostels', hostelRoutes);
   console.log('✅ Hostels routes loaded');
-  app.use('/api/payments', require('./routes/payments'));
+  
+  const paymentRoutes = require('./routes/payments');
+  app.use('/api/payments', paymentRoutes);
   console.log('✅ Payments routes loaded');
-  app.use('/api/subscriptions', require('./routes/subscriptions'));
+  
+  const subscriptionRoutes = require('./routes/subscriptions');
+  app.use('/api/subscriptions', subscriptionRoutes);
   console.log('✅ Subscriptions routes loaded');
-  app.use('/api/users', require('./routes/users'));
+  
+  const userRoutes = require('./routes/users');
+  app.use('/api/users', userRoutes);
   console.log('✅ Users routes loaded');
 } catch (err) {
   console.error('❌ Error loading routes:', err.message);
+  console.error('Stack:', err.stack);
 }
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() });
+});
+
+// Test endpoint
+app.post('/api/test', (req, res) => {
+  res.json({ message: 'POST test endpoint working', body: req.body });
 });
 
 // Catch-all for debugging 404s (handle all methods)
