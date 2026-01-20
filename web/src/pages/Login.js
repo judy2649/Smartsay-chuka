@@ -21,12 +21,17 @@ const Login = () => {
 
     try {
       const response = await authService.login(formData);
+      if (!response.data.token || !response.data.user) {
+        throw new Error('Invalid response from server');
+      }
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       // Navigate to home - user will be redirected to payment if not subscribed
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      console.error('Login error:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Login failed';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

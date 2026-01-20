@@ -5,8 +5,20 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Middleware - Configure CORS to accept requests from frontend
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'https://smartsay-chuka-web.onrender.com',
+    'https://smartstay-chuka-web.onrender.com'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -16,9 +16,17 @@ const Home = () => {
   const fetchHostels = async () => {
     try {
       const response = await hostelService.getAllHostels();
-      setHostels(response.data);
+      setHostels(response.data || response.data?.hostels || []);
     } catch (err) {
-      setError('Failed to load hostels');
+      console.error('Error fetching hostels:', err);
+      // If 402 (subscription required), show subscription prompt instead of error
+      if (err.response?.status === 402) {
+        // User will see subscription prompt from the component logic
+        setHostels([]);
+      } else {
+        const errorMsg = err.response?.data?.message || err.message || 'Failed to load hostels';
+        setError(errorMsg);
+      }
     } finally {
       setLoading(false);
     }

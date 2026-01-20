@@ -127,12 +127,19 @@ exports.getAllHostels = async (req, res) => {
         return res.json(mockHostels);
       }
 
-      // Not subscribed
-      return res.status(402).json({ message: 'Subscription required to access hostels' });
+      // Not subscribed - send message for UI to redirect to payment
+      // But still return empty list to allow component to render subscription prompt
+      return res.status(402).json({ 
+        message: 'Subscription required to access hostels',
+        hostels: []
+      });
     }
 
     // No user attached: require subscription
-    return res.status(402).json({ message: 'Subscription required to access hostels' });
+    return res.status(402).json({ 
+      message: 'Subscription required to access hostels',
+      hostels: []
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

@@ -4,7 +4,7 @@
   publish = "build"
 
 [build.environment]
-  REACT_APP_API_URL = "https://smartstay-chukaapp.glitch.me"
+  REACT_APP_API_URL = "https://smartstay-chukaapp.glitch.me/api"
   CI = "false"
 
 [[redirects]]
@@ -13,10 +13,10 @@
   status = 200
 
 [context.production]
-  environment = { REACT_APP_API_URL = "https://smartstay-chukaapp.glitch.me" }
+  environment = { CI = "false" }
 
 [context.deploy-preview]
-  environment = { REACT_APP_API_URL = "https://smartstay-chukaapp.glitch.me" }
+  environment = { CI = "false" }
 
 [context.branch-deploy]
-  environment = { REACT_APP_API_URL = "https://smartstay-chukaapp.glitch.me" }
+  environment = { CI = "false" }
