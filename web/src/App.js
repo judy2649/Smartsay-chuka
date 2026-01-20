@@ -19,11 +19,23 @@ function App() {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
+
+    // Listen for storage changes (from other tabs or registration)
+    const handleStorageChange = () => {
+      const updatedUser = localStorage.getItem('user');
+      if (updatedUser) {
+        setUser(JSON.parse(updatedUser));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const ProtectedRoute = ({ children }) => {
+    const currentUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : user;
     if (loading) return <div>Loading...</div>;
-    return user ? children : <Navigate to="/login" />;
+    return currentUser ? children : <Navigate to="/login" />;
   };
 
   const AdminRoute = ({ children }) => {
