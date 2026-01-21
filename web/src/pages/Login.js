@@ -26,8 +26,15 @@ const Login = () => {
       }
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      // Navigate to home - user will be redirected to payment if not subscribed
-      navigate('/');
+      
+      // If admin, redirect to admin dashboard
+      if (response.data.user.isAdmin) {
+        console.log('🔐 Admin detected, redirecting to admin dashboard');
+        navigate('/admin/dashboard');
+      } else {
+        // Regular user - navigate to home, will be redirected to payment if not subscribed
+        navigate('/');
+      }
     } catch (err) {
       console.error('Login error:', err);
       const errorMessage = err.response?.data?.message || err.message || 'Login failed';

@@ -136,6 +136,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('🔐 Login attempt:', email);
 
     // Validate required fields
     if (!email || !password) {
@@ -145,26 +146,32 @@ exports.login = async (req, res) => {
     // Find user by email
     const user = await findUserByEmail(email);
     if (!user) {
+      console.log('❌ User not found:', email);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Check password (handle both hashed and mock plain text)
     let isPasswordValid = false;
-    if (isDatabaseAvailable && user.password.startsWith('$2')) {
-      // Database user with hashed password
+    if (user.password && user.password.startsWith('$2')) {
+      // Hashed password (database)
       isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log('🔑 Database user password check');
     } else {
-      // Mock user with plain text password (for testing)
+      // Plain text password (mock fallback)
       isPasswordValid = password === user.password;
+      console.log('🔑 Mock user password check');
     }
 
     if (!isPasswordValid) {
+      console.log('❌ Invalid password for:', email);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    console.log('✅ Login successful:', email, '| isAdmin:', user.isAdmin);
+
     // Generate JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, isAdmin: user.isAdmin },
       process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345',
       { expiresIn: '30d' }
     );
@@ -183,7 +190,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('❌ Login error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
