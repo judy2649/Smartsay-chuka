@@ -1,7 +1,7 @@
 .admin-container {
   padding: 20px;
   background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
-              url('https://images.unsplash.com/photo-1570129477492-45ac003ff2be?w=1200&h=800&fit=crop') center/cover fixed;
+              url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop') center/cover fixed;
   min-height: 100vh;
 }
 
