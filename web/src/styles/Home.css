@@ -2,7 +2,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  background: url('https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat fixed;
+  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
+              url('https://images.unsplash.com/photo-1570129477492-45ac003ff2be?w=1200&h=800&fit=crop') center/cover fixed;
   min-height: 100vh;
   border-radius: 12px;
 }

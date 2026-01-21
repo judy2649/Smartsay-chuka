@@ -47,6 +47,7 @@ function App() {
 
   return (
     <Router>
+      <div className="page-signature">🚀 Welcome to Judy Softwares</div>
       <Routes>
         {/* Admin routes - no navbar */}
         <Route path="/admin/login" element={<AdminLogin />} />
