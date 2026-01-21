@@ -25,18 +25,29 @@ const findUserById = async (id) => {
 
 const findUserByEmail = async (email) => {
   try {
+    console.log('🔍 Searching for user:', email);
     const user = await User.findOne({ where: { email } });
     if (user) {
+      console.log('✅ Found user in database:', email);
       isDatabaseAvailable = true;
       return user;
     }
+    console.log('⚠️  User not found in database, checking mock...');
   } catch (err) {
-    console.warn('Database unavailable, using mock data');
+    console.warn('⚠️ Database error, falling back to mock:', err.message);
     isDatabaseAvailable = false;
-    // Return from mock database
-    const mockUser = mockDatabase.users.find(u => u.email === email);
-    return mockUser || null;
   }
+  
+  // Fallback to mock database
+  console.log('🔍 Searching mock database...');
+  const mockUser = mockDatabase.users.find(u => u.email === email);
+  if (mockUser) {
+    console.log('✅ Found user in mock database:', email);
+  } else {
+    console.log('❌ User not found anywhere:', email);
+    console.log('📋 Mock database users:', mockDatabase.users.map(u => u.email));
+  }
+  return mockUser || null;
 };
 
 const updateUserSubscription = async (id, subscribed = true, expiryDate = null) => {
@@ -136,34 +147,42 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('🔐 Login attempt:', email);
+    console.log('\n🔐 [LOGIN ATTEMPT]', email);
 
     // Validate required fields
     if (!email || !password) {
+      console.log('❌ Missing email or password');
       return res.status(400).json({ message: 'Email and password required' });
     }
 
     // Find user by email
+    console.log('📋 Searching for user...');
     const user = await findUserByEmail(email);
     if (!user) {
-      console.log('❌ User not found:', email);
+      console.log('❌ User not found');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+    console.log('✅ User found:', user.email);
 
     // Check password (handle both hashed and mock plain text)
     let isPasswordValid = false;
+    console.log('🔑 Password hash check - starts with $2:', user.password?.substring(0, 2) === '$2');
+    
     if (user.password && user.password.startsWith('$2')) {
       // Hashed password (database)
+      console.log('🔐 Comparing hashed password...');
       isPasswordValid = await bcrypt.compare(password, user.password);
-      console.log('🔑 Database user password check');
     } else {
       // Plain text password (mock fallback)
+      console.log('🔐 Comparing plain text password...');
+      console.log('   Input:', password);
+      console.log('   Stored:', user.password);
       isPasswordValid = password === user.password;
-      console.log('🔑 Mock user password check');
+      console.log('   Result:', isPasswordValid);
     }
 
     if (!isPasswordValid) {
-      console.log('❌ Invalid password for:', email);
+      console.log('❌ Password mismatch');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
