@@ -1,8 +1,21 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+// Determine API URL based on environment
+let API_BASE_URL = process.env.REACT_APP_API_URL;
+
+if (!API_BASE_URL) {
+  // Auto-detect based on hostname
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // Local development - backend on port 10000
+    API_BASE_URL = 'http://localhost:10000/api';
+  } else {
+    // Production - use Render backend
+    API_BASE_URL = 'https://smartsay-chuka-backend.onrender.com/api';
+  }
+}
 
 console.log('🔧 API Configuration:');
+console.log('   Hostname:', window.location.hostname);
 console.log('   API_BASE_URL:', API_BASE_URL);
 console.log('   REACT_APP_API_URL env:', process.env.REACT_APP_API_URL);
 
