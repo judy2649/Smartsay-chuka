@@ -9,8 +9,11 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showImportForm, setShowImportForm] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [editingHostelId, setEditingHostelId] = useState(null);
   const [importText, setImportText] = useState('');
   const [importMsg, setImportMsg] = useState('');
+  const [imageModalData, setImageModalData] = useState({ imageUrl: '', imageFile: null, preview: '' });
   const [user] = useState(() => {
     const stored = localStorage.getItem('user');
     return stored ? JSON.parse(stored) : null;
@@ -129,6 +132,60 @@ const AdminDashboard = () => {
       } catch (err) {
         console.error('Failed to delete hostel:', err);
       }
+    }
+  };
+
+  const openImageModal = (hostelId) => {
+    setEditingHostelId(hostelId);
+    setImageModalData({ imageUrl: '', imageFile: null, preview: '' });
+    setShowImageModal(true);
+  };
+
+  const handleImageModalFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB');
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageModalData(prev => ({
+          ...prev,
+          imageFile: event.target.result,
+          preview: event.target.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveHostelImage = async () => {
+    if (!imageModalData.imageUrl && !imageModalData.imageFile) {
+      alert('Please provide an image URL or upload an image file');
+      return;
+    }
+
+    try {
+      const payload = {};
+      if (imageModalData.imageFile) {
+        payload.image = imageModalData.imageFile;
+      } else if (imageModalData.imageUrl) {
+        payload.imageUrl = imageModalData.imageUrl;
+      }
+
+      await api.post(`/hostels/${editingHostelId}/image`, payload);
+      setShowImageModal(false);
+      setImageModalData({ imageUrl: '', imageFile: null, preview: '' });
+      fetchHostels();
+      alert('Image updated successfully!');
+    } catch (err) {
+      console.error('Failed to update image:', err);
+      alert('Failed to update image: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -353,6 +410,7 @@ const AdminDashboard = () => {
                       </div>
 
                       <div className="card-actions">
+                        <button className="btn-edit" onClick={() => openImageModal(hostel._id)}>📸 Edit Image</button>
                         <button className="btn-delete" onClick={() => handleDeleteHostel(hostel._id)}>🗑️ Delete</button>
                       </div>
                     </div>
@@ -363,7 +421,52 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+      {/* Image Upload Modal */}
+      {showImageModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>📸 Upload Hostel Image</h2>
+              <button className="modal-close" onClick={() => setShowImageModal(false)}>✕</button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="image-upload-option">
+                <h3>Option 1: Upload Image File</h3>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageModalFileUpload}
+                  className="file-input"
+                />
+              </div>
+
+              <div className="image-url-option">
+                <h3>Option 2: Image URL</h3>
+                <input
+                  type="text"
+                  placeholder="https://example.com/image.jpg"
+                  value={imageModalData.imageUrl}
+                  onChange={(e) => setImageModalData(prev => ({ ...prev, imageUrl: e.target.value }))}
+                  className="url-input"
+                />
+              </div>
+
+              {imageModalData.preview && (
+                <div className="image-preview">
+                  <p>Preview:</p>
+                  <img src={imageModalData.preview} alt="Preview" className="preview-img" />
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-submit" onClick={handleSaveHostelImage}>Save Image</button>
+              <button className="btn-cancel" onClick={() => setShowImageModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}    </div>
   );
 };
 

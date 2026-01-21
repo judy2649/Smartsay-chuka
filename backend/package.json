@@ -1,6 +1,38 @@
 {
   "name": "smartstay-chuka-backend",
-  "version": "1.0.0",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = { cloudinary, uploadToCloudinary };};  });    uploadStream.end(fileBuffer);    // Write the buffer to the stream    );      }        }          resolve(result.secure_url);        } else {          reject(error);        if (error) {      (error, result) => {      },        public_id: fileName || undefined        resource_type: 'auto',        folder: 'smartstay-chuka/hostels',      {    const uploadStream = cloudinary.uploader.upload_stream(  return new Promise((resolve, reject) => {const uploadToCloudinary = async (fileBuffer, fileName) => {// Helper function to upload image to Cloudinary});  api_secret: process.env.CLOUDINARY_API_SECRET  api_key: process.env.CLOUDINARY_API_KEY,  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'smartstay-chuka',cloudinary.config({// Configure Cloudinary  "version": "1.0.0",
   "description": "Backend API for SMARTSTAY CHUKA hostel booking app",
   "main": "server.js",
   "scripts": {
@@ -24,7 +56,9 @@
     "axios": "^1.5.0",
     "cors": "^2.8.5",
     "express-validator": "^7.0.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "cloudinary": "^1.40.0",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",

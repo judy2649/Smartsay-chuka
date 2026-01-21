@@ -1,4 +1,5 @@
 const Hostel = require('../models/Hostel');
+const { uploadToCloudinary } = require('../config/cloudinary');
 
 // Mock hostel data for Chuka University
 const mockHostels = [
@@ -260,6 +261,58 @@ exports.addReview = async (req, res) => {
     await hostel.save();
 
     res.json({ message: 'Review added successfully', hostel });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+// Update hostel image (admin only)
+exports.updateHostelImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { image, imageUrl } = req.body;
+
+    if (!req.user || !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    if (!image && !imageUrl) {
+      return res.status(400).json({ message: 'No image provided' });
+    }
+
+    // Find in mock data
+    const hostel = mockHostels.find(h => h._id === id);
+    if (!hostel) {
+      return res.status(404).json({ message: 'Hostel not found' });
+    }
+
+    let imageUrlToSave = imageUrl;
+
+    // If base64 image provided, upload to Cloudinary
+    if (image && image.startsWith('data:image')) {
+      try {
+        // Convert base64 to buffer
+        const base64Data = image.replace(/^data:image\/[a-z]+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        // Upload to Cloudinary
+        imageUrlToSave = await uploadToCloudinary(buffer, `hostel-${id}-${Date.now()}`);
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        return res.status(500).json({ 
+          message: 'Failed to upload image to cloud storage',
+          error: uploadError.message 
+        });
+      }
+    }
+
+    // Update hostel image URL in mock data
+    hostel.image = imageUrlToSave;
+
+    res.json({ 
+      message: 'Hostel image updated successfully', 
+      hostel,
+      imageUrl: imageUrlToSave
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
