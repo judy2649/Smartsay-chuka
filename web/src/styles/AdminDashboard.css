@@ -209,10 +209,18 @@
 }
 
 .admin-hostel-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  border: 1px solid rgba(102, 78, 162, 0.2);
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(102, 78, 162, 0.25);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.admin-hostel-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(102, 78, 162, 0.35);
 }
 
 .card-image {
