@@ -1,13 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
+// Legacy file - re-export the new PostgreSQL/Sequelize model
+module.exports = require('./database').User;
     required: true
   },
   email: {

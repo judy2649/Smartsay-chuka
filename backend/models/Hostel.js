@@ -1,13 +1,5 @@
-const mongoose = require('mongoose');
-
-const hostelSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
+// Legacy file - re-export the new PostgreSQL/Sequelize model
+module.exports = require('./database').Hostel;
   },
   location: {
     type: String,
