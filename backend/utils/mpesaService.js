@@ -80,6 +80,37 @@ class MpesaService {
       throw error;
     }
   }
+
+  async queryTransactionStatus(checkoutRequestId) {
+    try {
+      const accessToken = await this.generateAccessToken();
+      const timestamp = new Date().toISOString().replace(/[:-]/g, '').split('.')[0];
+      const password = Buffer.from(`${this.shortCode}${this.passKey}${timestamp}`).toString('base64');
+
+      const payload = {
+        BusinessShortCode: this.shortCode,
+        Password: password,
+        Timestamp: timestamp,
+        CheckoutRequestID: checkoutRequestId
+      };
+
+      const response = await axios.post(
+        `${this.baseUrl}/mpesa/stkpushquery/v1/query`,
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Error querying transaction status:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = new MpesaService();

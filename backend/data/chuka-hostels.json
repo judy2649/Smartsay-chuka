@@ -1,0 +1,255 @@
+{
+  "hostels": [
+    {
+      "name": "Kenyatta Hostel",
+      "description": "Premier on-campus hostel with excellent facilities. Features modern infrastructure including WiFi connectivity, hot water showers, common kitchenettes, and 24-hour security.",
+      "location": "Main Campus, Chuka University",
+      "distance": "0.2 km from Main Gate",
+      "contact": {
+        "phone": "+254-20-2361086",
+        "email": "nyumba@chuka.ac.ke",
+        "caretaker": "Management Office"
+      },
+      "amenities": [
+        "WiFi Internet",
+        "Hot Water Supply",
+        "24/7 Security",
+        "Common Kitchen",
+        "Laundry Facilities",
+        "Study Room",
+        "TV Lounge"
+      ],
+      "features": [
+        "Lifts/Elevators",
+        "Smart TVs in rooms",
+        "DSTV available",
+        "Pool table",
+        "Table tennis",
+        "Darts",
+        "Indoor recreation"
+      ],
+      "roomTypes": [
+        {
+          "type": "Single Room",
+          "capacity": 1
+        },
+        {
+          "type": "Bedsitter",
+          "capacity": 2
+        },
+        {
+          "type": "One Bedroom Apartment",
+          "capacity": 4
+        }
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1630681817549-99325f16d43d?w=800&h=600&fit=crop",
+      "verified": true,
+      "rating": 4.5
+    },
+    {
+      "name": "Campus View Hostel",
+      "description": "Budget-friendly hostel located within walking distance of the main campus. Provides essential amenities for student accommodation with secure and comfortable environment.",
+      "location": "Within Campus Grounds",
+      "distance": "0.5 km from Academic Block",
+      "contact": {
+        "phone": "+254-20-2361086",
+        "email": "nyumba@chuka.ac.ke",
+        "caretaker": "Management Office"
+      },
+      "amenities": [
+        "WiFi Internet",
+        "Hot Water Supply",
+        "24/7 Security",
+        "Common Kitchen",
+        "Study Area",
+        "Laundry Service"
+      ],
+      "features": [
+        "Secure entrance",
+        "Common sitting area",
+        "Reading room",
+        "Kitchenette",
+        "Bathroom facilities"
+      ],
+      "roomTypes": [
+        {
+          "type": "Single Room",
+          "capacity": 1
+        },
+        {
+          "type": "Bedsitter",
+          "capacity": 2
+        }
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1618886996285-87e2f0c7d5ba?w=800&h=600&fit=crop",
+      "verified": true,
+      "rating": 4.2
+    },
+    {
+      "name": "Chuka Plaza Residence",
+      "description": "Modern student residence with premium facilities. Offers spacious rooms and recreational facilities conducive for academic excellence.",
+      "location": "Off-Campus, Chuka Town",
+      "distance": "0.8 km from Main Gate",
+      "contact": {
+        "phone": "+254-20-2361086",
+        "email": "nyumba@chuka.ac.ke",
+        "caretaker": "Management Office"
+      },
+      "amenities": [
+        "WiFi Internet",
+        "Hot Water Supply",
+        "24/7 Security",
+        "Gym Facility",
+        "Laundry Service",
+        "Parking Space",
+        "Common Kitchen"
+      ],
+      "features": [
+        "Air conditioned rooms",
+        "Balcony/Veranda",
+        "Modern furniture",
+        "Smart TVs",
+        "Recreation center",
+        "Cafeteria"
+      ],
+      "roomTypes": [
+        {
+          "type": "Single Room with En-suite",
+          "capacity": 1
+        },
+        {
+          "type": "Double Room with En-suite",
+          "capacity": 2
+        },
+        {
+          "type": "Executive Apartment",
+          "capacity": 4
+        }
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1631049307038-da31f88d52d4?w=800&h=600&fit=crop",
+      "verified": true,
+      "rating": 4.6
+    },
+    {
+      "name": "Heritage Heights",
+      "description": "Comfortable accommodation with homely environment. Perfect for students seeking a peaceful place to study and rest during their university journey.",
+      "location": "Chuka Town Center",
+      "distance": "1.2 km from Campus",
+      "contact": {
+        "phone": "+254-20-2361086",
+        "email": "nyumba@chuka.ac.ke",
+        "caretaker": "Management Office"
+      },
+      "amenities": [
+        "WiFi Internet",
+        "Hot Water Supply",
+        "Security Guard",
+        "Common Kitchen",
+        "Laundry Service",
+        "Study Room"
+      ],
+      "features": [
+        "Secure compound",
+        "Peaceful environment",
+        "Community spirit",
+        "Parking area",
+        "Water tank"
+      ],
+      "roomTypes": [
+        {
+          "type": "Single Room",
+          "capacity": 1
+        },
+        {
+          "type": "Bedsitter",
+          "capacity": 2
+        },
+        {
+          "type": "Two Bedroom House",
+          "capacity": 6
+        }
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1567521464027-f127ff144326?w=800&h=600&fit=crop",
+      "verified": true,
+      "rating": 4.1
+    },
+    {
+      "name": "Scholar's Lodge",
+      "description": "Dedicated student accommodation offering quiet environment for studies with all basic facilities required for comfortable living.",
+      "location": "Academic Quarter, Chuka",
+      "distance": "0.6 km from Library",
+      "contact": {
+        "phone": "+254-20-2361086",
+        "email": "nyumba@chuka.ac.ke",
+        "caretaker": "Management Office"
+      },
+      "amenities": [
+        "WiFi Internet",
+        "Hot Water Supply",
+        "24/7 Security",
+        "Quiet Study Environment",
+        "Common Kitchen",
+        "Laundry Facilities"
+      ],
+      "features": [
+        "Soundproof rooms",
+        "Study desks",
+        "Library access",
+        "Common room",
+        "Secure area"
+      ],
+      "roomTypes": [
+        {
+          "type": "Single Study Room",
+          "capacity": 1
+        },
+        {
+          "type": "Double Study Room",
+          "capacity": 2
+        }
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+      "verified": true,
+      "rating": 4.4
+    },
+    {
+      "name": "University Quarters",
+      "description": "Official university accommodation with strict standards. Managed directly by the university to ensure quality and student welfare.",
+      "location": "Main Campus Premises",
+      "distance": "0.3 km from Administration Block",
+      "contact": {
+        "phone": "+254-20-2361086",
+        "email": "nyumba@chuka.ac.ke",
+        "caretaker": "University Housing Office"
+      },
+      "amenities": [
+        "WiFi Internet",
+        "Hot Water Supply",
+        "24/7 Campus Security",
+        "Common Kitchens",
+        "Laundry Service",
+        "Maintenance Support"
+      ],
+      "features": [
+        "University oversight",
+        "Disciplinary support",
+        "Health services access",
+        "Counseling services",
+        "Emergency response"
+      ],
+      "roomTypes": [
+        {
+          "type": "Single Room",
+          "capacity": 1
+        },
+        {
+          "type": "Double Occupancy",
+          "capacity": 2
+        }
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1555636222-cae831c7a9a7?w=800&h=600&fit=crop",
+      "verified": true,
+      "rating": 4.3
+    }
+  ]
+}

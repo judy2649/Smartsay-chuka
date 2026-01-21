@@ -99,7 +99,6 @@ exports.getPaymentHistory = async (req, res) => {
   }
 };
 
-// Mock endpoint to confirm payment in offline mode
 exports.confirmMockPayment = async (req, res) => {
   try {
     // If running with mock users, update the mock user's subscription
@@ -127,6 +126,156 @@ exports.confirmMockPayment = async (req, res) => {
     }
 
     res.status(400).json({ message: 'Unable to confirm payment' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Query payment status and verify if payment was completed
+exports.verifyPaymentStatus = async (req, res) => {
+  try {
+    const { paymentId } = req.params;
+
+    // Find payment in database
+    let payment;
+    try {
+      payment = await Payment.findByPk(paymentId);
+    } catch (err) {
+      console.log('Database query error, checking mock data');
+    }
+
+    if (!payment) {
+      // Check mock database if available
+      if (_mock && _mock.findPaymentById) {
+        const mockPayment = _mock.findPaymentById(paymentId);
+        if (mockPayment) {
+          return res.json({
+            success: true,
+            paymentId,
+            status: mockPayment.status,
+            amount: mockPayment.amount,
+            mpesaReceiptNumber: mockPayment.mpesaReceiptNumber,
+            isPaid: mockPayment.status === 'completed',
+            createdAt: mockPayment.createdAt,
+            source: 'mock'
+          });
+        }
+      }
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    // If payment exists in database, check its status
+    const isPaid = payment.status === 'completed';
+
+    res.json({
+      success: true,
+      paymentId: payment.id,
+      status: payment.status,
+      amount: payment.amount,
+      mpesaReceiptNumber: payment.mpesaReceiptNumber || null,
+      phoneNumber: payment.phoneNumber,
+      isPaid,
+      createdAt: payment.createdAt,
+      updatedAt: payment.updatedAt,
+      source: 'database'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Check if user has paid for subscription (verify subscription status)
+exports.checkSubscriptionStatus = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Try database first
+    let user;
+    try {
+      user = await User.findByPk(userId);
+    } catch (err) {
+      console.log('Database query error, checking mock data');
+    }
+
+    if (!user) {
+      // Check mock database
+      if (_mock && _mock.findMockUserById) {
+        const mockUser = _mock.findMockUserById(userId);
+        if (mockUser) {
+          const isActive = mockUser.isSubscribed && new Date(mockUser.subscriptionExpiryDate) > new Date();
+          return res.json({
+            userId,
+            isSubscribed: mockUser.isSubscribed,
+            isActive,
+            subscriptionExpiryDate: mockUser.subscriptionExpiryDate,
+            daysRemaining: isActive ? Math.ceil((new Date(mockUser.subscriptionExpiryDate) - new Date()) / (1000 * 60 * 60 * 24)) : 0,
+            source: 'mock'
+          });
+        }
+      }
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // User found in database
+    const isActive = user.isSubscribed && user.subscriptionExpiryDate && new Date(user.subscriptionExpiryDate) > new Date();
+    const daysRemaining = isActive ? Math.ceil((new Date(user.subscriptionExpiryDate) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+
+    res.json({
+      userId: user.id,
+      isSubscribed: user.isSubscribed,
+      isActive,
+      subscriptionExpiryDate: user.subscriptionExpiryDate,
+      daysRemaining,
+      source: 'database'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Get recent payments for verification
+exports.getRecentPayments = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const limit = req.query.limit || 10;
+
+    // Try database first
+    let payments = [];
+    try {
+      payments = await Payment.findAll({
+        where: { userId },
+        limit: parseInt(limit),
+        order: [['createdAt', 'DESC']]
+      });
+    } catch (err) {
+      console.log('Database query error, checking mock data');
+    }
+
+    if (payments.length === 0) {
+      // Check mock database
+      if (_mock && _mock.getPaymentsByUserId) {
+        payments = _mock.getPaymentsByUserId(userId).slice(0, limit);
+        if (payments.length > 0) {
+          return res.json({
+            payments,
+            source: 'mock'
+          });
+        }
+      }
+    }
+
+    res.json({
+      payments: payments.map(p => ({
+        paymentId: p.id,
+        amount: p.amount,
+        status: p.status,
+        mpesaReceiptNumber: p.mpesaReceiptNumber,
+        phoneNumber: p.phoneNumber,
+        createdAt: p.createdAt,
+        isPaid: p.status === 'completed'
+      })),
+      source: payments.length > 0 ? 'database' : 'mock'
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
