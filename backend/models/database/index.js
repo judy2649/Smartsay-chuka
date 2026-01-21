@@ -2,7 +2,7 @@ const User = require('./User');
 const Hostel = require('./Hostel');
 const Subscription = require('./Subscription');
 const Payment = require('./Payment');
-const sequelize = require('../config/database');
+const sequelize = require('../../config/database');
 
 // Define relationships
 User.hasMany(Subscription, { foreignKey: 'userId', onDelete: 'CASCADE' });
