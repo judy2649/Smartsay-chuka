@@ -97,13 +97,46 @@ app.post('/api/test', (req, res) => {
   res.json({ message: 'POST test endpoint working', body: req.body });
 });
 
+// Test endpoint with mock data
+app.get('/api/test/mock', (req, res) => {
+  const mockData = require('./utils/mockDatabase');
+  res.json({
+    message: 'Mock data available',
+    mockUsers: mockData.users,
+    mockHostels: mockData.hostels,
+    mockPayments: mockData.payments,
+    timestamp: new Date()
+  });
+});
+
+// Test endpoint - login with mock admin
+app.post('/api/test/admin-login', (req, res) => {
+  const mockData = require('./utils/mockDatabase');
+  const admin = mockData.users.find(u => u.isAdmin);
+  if (admin) {
+    const jwt = require('jsonwebtoken');
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email, isAdmin: true },
+      process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345',
+      { expiresIn: '30d' }
+    );
+    res.json({
+      message: 'Mock admin login successful',
+      token,
+      user: admin
+    });
+  } else {
+    res.status(404).json({ message: 'Admin not found in mock data' });
+  }
+});
+
 // Catch-all for debugging 404s (handle all methods)
 app.all('*', (req, res) => {
   res.status(404).json({ 
     message: 'Route not found', 
     method: req.method,
     path: req.path,
-    availableRoutes: ['/api/auth/login', '/api/auth/register', '/api/hostels', '/api/payments', '/api/health', '/api/test']
+    availableRoutes: ['/api/auth/login', '/api/auth/register', '/api/hostels', '/api/payments', '/api/health', '/api/test', '/api/test/mock', '/api/test/admin-login']
   });
 });
 
