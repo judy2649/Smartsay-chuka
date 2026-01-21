@@ -316,3 +316,67 @@
     font-size: 22px;
   }
 }
+
+/* Image Upload Styles */
+.image-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 2px dashed #667eea;
+  border-radius: 8px;
+}
+
+.image-upload-label {
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
+}
+
+.image-upload-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.image-upload-input:hover {
+  border-color: #667eea;
+  background: #f0f0f0;
+}
+
+.image-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.image-preview p {
+  margin: 0;
+  font-weight: 600;
+  color: #666;
+  font-size: 12px;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 8px;
+  border: 2px solid #667eea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+.error-message {
+  color: #ff4757;
+  font-size: 12px;
+  margin: 0;
+  padding: 8px;
+  background: #ffe5e5;
+  border-radius: 5px;
+}

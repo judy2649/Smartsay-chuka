@@ -28,6 +28,8 @@ const AdminDashboard = () => {
     amenities: '',
     roomTypes: ''
   });
+  const [imagePreview, setImagePreview] = useState('');
+  const [uploadError, setUploadError] = useState('');
 
   useEffect(() => {
     if (!user || !user.isAdmin) {
@@ -52,6 +54,32 @@ const AdminDashboard = () => {
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setUploadError('Image size must be less than 5MB');
+        return;
+      }
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        setUploadError('Please select an image file');
+        return;
+      }
+
+      setUploadError('');
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target.result;
+        setImagePreview(base64);
+        setFormData(prev => ({ ...prev, image: base64 }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleAddHostel = async (e) => {
@@ -85,6 +113,7 @@ const AdminDashboard = () => {
         phoneNumber: '', caretaker: '', caretakerPhone: '',
         image: '', amenities: '', roomTypes: ''
       });
+      setImagePreview('');
       setShowAddForm(false);
       fetchHostels();
     } catch (err) {
@@ -201,13 +230,25 @@ const AdminDashboard = () => {
                   onChange={handleFormChange}
                   required
                 />
-                <input
-                  type="url"
-                  name="image"
-                  placeholder="Hostel Image URL (optional)"
-                  value={formData.image}
-                  onChange={handleFormChange}
-                />
+                <div className="image-upload-section">
+                  <label htmlFor="image-upload" className="image-upload-label">
+                    📸 Upload Hostel Picture
+                  </label>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="image-upload-input"
+                  />
+                  {uploadError && <p className="error-message">{uploadError}</p>}
+                  {imagePreview && (
+                    <div className="image-preview">
+                      <p>Preview:</p>
+                      <img src={imagePreview} alt="Preview" className="preview-img" />
+                    </div>
+                  )}
+                </div>
                 <input
                   type="text"
                   name="amenities"
@@ -226,7 +267,10 @@ const AdminDashboard = () => {
                 />
                 <div className="form-buttons">
                   <button type="submit" className="btn-submit">Save Hostel</button>
-                  <button type="button" className="btn-cancel" onClick={() => setShowAddForm(false)}>Cancel</button>
+                  <button type="button" className="btn-cancel" onClick={() => {
+                    setShowAddForm(false);
+                    setImagePreview('');
+                  }}>Cancel</button>
                 </div>
               </form>
             </div>
