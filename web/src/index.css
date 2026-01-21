@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-              url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop') center/cover fixed no-repeat;
+              url('https://images.unsplash.com/photo-1516455590571-18256e5bb809?w=1200&h=800&fit=crop') center/cover fixed no-repeat;
   min-height: 100vh;
 }
 
