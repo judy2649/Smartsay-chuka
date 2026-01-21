@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { _mock } = require('../controllers/authController');
-const User = require('../models/User');
+const { User } = require('../models/database');
 
 // Auth middleware: requires a valid token
 const authMiddleware = async (req, res, next) => {
@@ -8,28 +7,20 @@ const authMiddleware = async (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'No token provided' });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345');
 
-    // Try to attach full mock user when running offline
-    if (_mock && _mock.findMockUserById) {
-      const mockUser = _mock.findMockUserById(decoded.id) || _mock.findMockUserByEmail(decoded.email);
-      if (mockUser) {
-        req.user = { ...mockUser };
-        return next();
-      }
-    }
-
-    // Fallback: attach decoded token (DB-backed user expected)
+    // Try to get user from database
     try {
-      const dbUser = await User.findById(decoded.id).select('-password');
-      if (dbUser) {
-        req.user = dbUser;
+      const user = await User.findByPk(decoded.id);
+      if (user) {
+        req.user = user;
         return next();
       }
     } catch (dbErr) {
-      // ignore DB lookup errors and fall through
+      console.error('DB user lookup error:', dbErr);
     }
 
+    // Fallback: attach decoded token
     req.user = decoded;
     next();
   } catch (error) {
@@ -43,25 +34,55 @@ const optionalAuth = async (req, res, next) => {
   if (!token) return next();
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (_mock && _mock.findMockUserById) {
-      const mockUser = _mock.findMockUserById(decoded.id) || _mock.findMockUserByEmail(decoded.email);
-      if (mockUser) {
-        req.user = { ...mockUser };
-        return next();
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345');
+    try {
+      const user = await User.findByPk(decoded.id);
+      if (user) {
+        req.user = user;
       }
-    }
-    const dbUser = await User.findById(decoded.id).select('-password');
-    if (dbUser) {
-      req.user = dbUser;
-    } else {
+    } catch (dbErr) {
+      console.error('DB user lookup error:', dbErr);
       req.user = decoded;
     }
+    next();
   } catch (error) {
-    // ignore token errors for optional auth
+    next();
   }
+};
+
+// Admin middleware: requires admin role
+const adminMiddleware = async (req, res, next) => {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  next();
+};
+
+// Subscription check middleware
+const subscriptionMiddleware = (req, res, next) => {
+  if (!req.user) {
+    return res.status(402).json({ 
+      message: 'Subscription required - please log in first',
+      code: 'NOT_SUBSCRIBED'
+    });
+  }
+
+  if (!req.user.isSubscribed) {
+    return res.status(402).json({ 
+      message: 'Subscription required - please subscribe to continue',
+      code: 'NOT_SUBSCRIBED',
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+        firstName: req.user.firstName
+      }
+    });
+  }
+
   next();
 };
 
 module.exports = authMiddleware;
 module.exports.optionalAuth = optionalAuth;
+module.exports.adminMiddleware = adminMiddleware;
+module.exports.subscriptionMiddleware = subscriptionMiddleware;

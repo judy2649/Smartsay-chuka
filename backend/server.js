@@ -1,9 +1,12 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// Initialize PostgreSQL database
+const { syncDatabase } = require('./models/database');
+syncDatabase();
 
 // Middleware - Configure CORS to accept requests from frontend
 const corsOptions = {
@@ -26,14 +29,6 @@ if (process.env.NODE_ENV === 'production') {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartstay-chuka')
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch(err => {
-    console.log('⚠️ MongoDB connection error:', err.message);
-    console.log('⚠️ Running in mock mode - database features limited');
-  });
 
 // Routes - Import and register each separately
 console.log('📦 Loading routes...');
