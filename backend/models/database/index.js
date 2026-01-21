@@ -4,6 +4,7 @@ const Subscription = require('./Subscription');
 const Payment = require('./Payment');
 const sequelize = require('../../config/database');
 const bcrypt = require('bcryptjs');
+const mockDatabase = require('../../utils/mockDatabase');
 
 // Define relationships
 User.hasMany(Subscription, { foreignKey: 'userId', onDelete: 'CASCADE' });
@@ -44,7 +45,7 @@ const createDefaultAdmin = async () => {
     }
     
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
-    await User.create({
+    const admin = await User.create({
       firstName: 'Admin',
       lastName: 'User',
       email: adminEmail,
@@ -53,9 +54,27 @@ const createDefaultAdmin = async () => {
       isAdmin: true,
       isSubscribed: true
     });
-    console.log('✅ Default admin user created: admin@smartstay.chuka.edu.ke');
+    console.log('✅ Default admin user created:', adminEmail);
+    console.log('   Password hash:', hashedPassword.substring(0, 20) + '...');
   } catch (err) {
-    console.error('Admin creation error:', err.message);
+    console.error('❌ Admin creation error:', err.message);
+    // Update mock database as fallback
+    const mockAdmin = mockDatabase.users.find(u => u.email === 'admin@smartstay.chuka.edu.ke');
+    if (!mockAdmin) {
+      console.log('📝 Adding admin to mock database as fallback');
+      mockDatabase.users[0] = {
+        id: '1',
+        firstName: 'Admin',
+        lastName: 'User',
+        email: 'admin@smartstay.chuka.edu.ke',
+        phoneNumber: '0712345678',
+        password: 'admin@123',
+        isAdmin: true,
+        isSubscribed: true,
+        subscriptionExpiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        createdAt: new Date()
+      };
+    }
   }
 };
 

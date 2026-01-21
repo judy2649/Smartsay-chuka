@@ -191,13 +191,17 @@ exports.login = async (req, res) => {
 exports.adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('🔐 Admin login attempt:', email);
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password required' });
     }
 
     const user = await findUserByEmail(email);
+    console.log('👤 User found:', user ? `${user.email} (isAdmin: ${user.isAdmin})` : 'NOT FOUND');
+    
     if (!user || !user.isAdmin) {
+      console.log('❌ Admin login failed: User not found or not admin');
       return res.status(401).json({ message: 'Invalid admin credentials' });
     }
 
@@ -206,15 +210,19 @@ exports.adminLogin = async (req, res) => {
     if (user.password && user.password.startsWith('$2')) {
       // Hashed password
       isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log('🔑 Password check: Hashed comparison');
     } else {
       // Plain text password (mock fallback)
       isPasswordValid = password === user.password;
+      console.log('🔑 Password check: Plain text comparison');
     }
 
     if (!isPasswordValid) {
+      console.log('❌ Admin login failed: Invalid password');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    console.log('✅ Admin login successful:', email);
     const token = jwt.sign(
       { id: user.id, email: user.email, isAdmin: true },
       process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345',
@@ -234,7 +242,7 @@ exports.adminLogin = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Admin login error:', error);
+    console.error('❌ Admin login error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
