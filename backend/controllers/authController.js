@@ -201,7 +201,16 @@ exports.adminLogin = async (req, res) => {
       return res.status(401).json({ message: 'Invalid admin credentials' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Check password (handle both hashed and plain text)
+    let isPasswordValid = false;
+    if (user.password && user.password.startsWith('$2')) {
+      // Hashed password
+      isPasswordValid = await bcrypt.compare(password, user.password);
+    } else {
+      // Plain text password (mock fallback)
+      isPasswordValid = password === user.password;
+    }
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -220,7 +229,8 @@ exports.adminLogin = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        isAdmin: user.isAdmin
+        isAdmin: user.isAdmin,
+        isSubscribed: user.isSubscribed
       }
     });
   } catch (error) {

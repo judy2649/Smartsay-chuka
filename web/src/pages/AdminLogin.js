@@ -9,9 +9,9 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Demo admin credentials
-  const ADMIN_EMAIL = 'admin@smartstay.com';
-  const ADMIN_PASSWORD = 'admin123';
+  // Admin credentials
+  const ADMIN_EMAIL = 'admin@smartstay.chuka.edu.ke';
+  const ADMIN_PASSWORD = 'admin@123';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,9 +75,9 @@ const AdminLogin = () => {
             {loading ? 'Logging in...' : 'Login as Admin'}
           </button>
         </form>
-        <p>Demo Credentials: <br />
-          Email: admin@smartstay.com <br />
-          Password: admin123
+        <p>Admin Credentials: <br />
+          Email: admin@smartstay.chuka.edu.ke <br />
+          Password: admin@123
         </p>
         <p>Regular user? <a href="/login">Login here</a></p>
       </div>

@@ -5,9 +5,9 @@ const mockDatabase = {
       id: '1',
       firstName: 'Admin',
       lastName: 'User',
-      email: 'admin@smartstay.com',
+      email: 'admin@smartstay.chuka.edu.ke',
       phoneNumber: '0712345678',
-      password: 'admin123', // Not hashed for mock
+      password: 'admin@123', // Mock password - use admin@123
       isAdmin: true,
       isSubscribed: true,
       subscriptionExpiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
