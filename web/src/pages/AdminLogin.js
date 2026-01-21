@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import '../styles/Auth.css';
 
 const AdminLogin = () => {
@@ -23,25 +24,25 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      // Check admin credentials
-      if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {
-        const adminUser = {
-          id: 'admin-001',
-          firstName: 'Admin',
-          lastName: 'User',
-          email: ADMIN_EMAIL,
-          isAdmin: true,
-          isSubscribed: true
-        };
-        
-        localStorage.setItem('token', 'admin-token-' + Date.now());
-        localStorage.setItem('user', JSON.stringify(adminUser));
-        navigate('/admin/dashboard');
-      } else {
-        setError('Invalid admin credentials');
-      }
+      // Call backend admin login endpoint
+      const response = await api.post('/auth/admin/login', {
+        email: formData.email,
+        password: formData.password
+      });
+
+      const { token, user } = response.data;
+      
+      // Store token and user with isAdmin flag
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify({
+        ...user,
+        isAdmin: true,
+        isSubscribed: true
+      }));
+      
+      navigate('/admin/dashboard');
     } catch (err) {
-      setError('Login failed');
+      setError(err.response?.data?.message || 'Invalid admin credentials');
     } finally {
       setLoading(false);
     }
