@@ -178,8 +178,8 @@ exports.login = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         phoneNumber: user.phoneNumber,
-        isSubscribed: user.isSubscribed,
-        isAdmin: user.isAdmin
+        isSubscribed: user.isSubscribed || false,
+        isAdmin: user.isAdmin || false
       }
     });
   } catch (error) {
