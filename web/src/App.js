@@ -58,19 +58,16 @@ function App() {
         <Route path="/register" element={<Register />} />
         
         {/* Protected routes with navbar */}
-        <Route 
-          path="/" 
-          element={
-            <>
-              <Navbar />
-              <Routes>
-                <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-                <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </>
-          } 
-        />
+        <Route path="/*" element={
+          <>
+            <Navbar />
+            <Routes>
+              <Route path="payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+              <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </>
+        } />
       </Routes>
     </Router>
   );
