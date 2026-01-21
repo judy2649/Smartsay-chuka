@@ -73,25 +73,41 @@ const Payment = () => {
     setError('');
     setSuccess('');
 
+    if (!phoneNumber || phoneNumber.length < 12) {
+      setError('Please enter a valid M-Pesa phone number (254...)');
+      setLoading(false);
+      return;
+    }
+
     try {
-        setSuccess('Payment initiated! Simulating M-Pesa payment...');
-        setPaymentId('MOCK-' + Date.now());
+      setSuccess('🔔 Sending M-Pesa prompt to your phone...');
+      setPaymentId('MPESA-' + Date.now());
 
-        // Call mock confirm endpoint to mark subscription server-side
-        try {
-          await paymentService.confirmMockPayment();
-        } catch (err) {
-          console.log('Mock payment confirmation error (expected in some cases):', err.message);
-        }
+      // Try to initiate real M-Pesa payment
+      try {
+        const response = await paymentService.initiateMpesaPayment({ phoneNumber });
+        setPaymentId(response.paymentId || paymentId);
+        setSuccess('✅ M-Pesa prompt sent! Check your phone and enter your PIN to complete payment.');
+      } catch (mpesaErr) {
+        console.log('M-Pesa API error, using mock payment:', mpesaErr.message);
+        setSuccess('💳 Simulating M-Pesa payment (demo mode)...');
+      }
 
-        // Mark user subscribed in local storage and redirect
-        const updatedUser = { ...user, isSubscribed: true };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        
-        setTimeout(() => {
-          navigate('/', { replace: true });
-        }, 1500);
-        setPhoneNumber('');
+      // Call mock confirm endpoint to mark subscription
+      try {
+        await paymentService.confirmMockPayment();
+      } catch (err) {
+        console.log('Mock confirm error (expected in some cases):', err.message);
+      }
+
+      // Mark user subscribed in local storage
+      const updatedUser = { ...user, isSubscribed: true };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 3000);
+      setPhoneNumber('');
     } catch (err) {
       console.error('Payment error:', err);
       setError(err.response?.data?.message || 'Payment initiation failed');
@@ -105,7 +121,8 @@ const Payment = () => {
         <h1 className="payment-title">💳 Subscribe to SMARTSTAY CHUKA</h1>
         
         <div className="payment-prompt">
-          <p className="prompt-text">Pay SMARTSTAY CHUKA to: <strong>{SMARTSTAY_ACCOUNT}</strong></p>
+          <p className="prompt-text">🔔 Pay to: <strong>SMARTSTAY HOSTELS</strong></p>
+          <p className="prompt-amount">Amount: <strong>KES 263</strong></p>
         </div>
 
         <div className="subscription-details">
