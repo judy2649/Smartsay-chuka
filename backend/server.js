@@ -4,9 +4,8 @@ require('dotenv').config();
 
 const app = express();
 
-// Initialize PostgreSQL database
-const { syncDatabase } = require('./models/database');
-syncDatabase();
+// Initialize PostgreSQL database (non-blocking)
+require('./models/database');
 
 // Middleware - Configure CORS to accept requests from frontend
 const corsOptions = {

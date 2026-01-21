@@ -17,7 +17,7 @@ Hostel.belongsTo(User, { foreignKey: 'ownerId', as: 'owner' });
 Subscription.hasMany(Payment, { foreignKey: 'subscriptionId' });
 Payment.belongsTo(Subscription, { foreignKey: 'subscriptionId' });
 
-// Sync database
+// Sync database (non-blocking)
 const syncDatabase = async () => {
   try {
     await sequelize.sync({ alter: true });
@@ -26,6 +26,9 @@ const syncDatabase = async () => {
     console.error('❌ Database sync error:', err.message);
   }
 };
+
+// Start sync in background without blocking server startup
+syncDatabase().catch(err => console.error('Database sync failed:', err));
 
 module.exports = {
   User,
