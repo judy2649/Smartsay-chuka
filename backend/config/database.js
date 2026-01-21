@@ -2,12 +2,18 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 // PostgreSQL connection using Sequelize
+// Handle both full hostname and just the ID (auto-append .postgres.render.com if needed)
+let dbHost = process.env.DB_HOST || 'localhost';
+if (dbHost && !dbHost.includes('.') && dbHost.startsWith('dpg-')) {
+  dbHost = `${dbHost}.postgres.render.com`;
+}
+
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'smartstay_chuka',
   process.env.DB_USER || 'postgres',
   process.env.DB_PASSWORD || 'password',
   {
-    host: process.env.DB_HOST || 'localhost',
+    host: dbHost,
     port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     logging: false,
