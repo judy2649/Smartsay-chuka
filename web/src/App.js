@@ -52,15 +52,17 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         
-        {/* Public/Protected routes with navbar */}
+        {/* Auth routes - no navbar protection */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        {/* Protected routes with navbar */}
         <Route 
-          path="*" 
+          path="/" 
           element={
             <>
               <Navbar />
               <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
                 <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
