@@ -62,14 +62,19 @@ export const hostelService = {
   getHostelById: (id) => api.get(`/hostels/${id}`),
   createHostel: (data) => api.post('/hostels', data),
   updateHostel: (id, data) => api.put(`/hostels/${id}`, data),
-  addReview: (id, data) => api.post(`/hostels/${id}/review`, data)
+  addReview: (id, data) => api.post(`/hostels/${id}/review`, data),
+  getChukhaHostelData: () => api.get('/hostels/template/chuka-data'),
+  importHostelsFromData: (data) => api.post('/hostels/import/from-data', data)
 };
 
 hostelService.importHostels = (data) => api.post('/hostels/import', data);
 
 export const paymentService = {
   initiateMpesaPayment: (data) => api.post('/payments/initiate', data),
-  getPaymentHistory: () => api.get('/payments/history')
+  getPaymentHistory: () => api.get('/payments/history'),
+  verifyPaymentStatus: (paymentId) => api.get(`/payments/verify/${paymentId}`),
+  checkSubscriptionStatus: () => api.get('/payments/subscription/status'),
+  getRecentPayments: (limit = 10) => api.get(`/payments/recent?limit=${limit}`)
 };
 
 // Mock payment helper for offline/testing

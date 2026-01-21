@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { paymentService } from '../services/api';
 import '../styles/Payment.css';
@@ -9,8 +9,63 @@ const Payment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [paymentId, setPaymentId] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const user = JSON.parse(localStorage.getItem('user'));
   const SMARTSTAY_ACCOUNT = '0794173314';
+
+  // Check subscription status on component mount
+  useEffect(() => {
+    checkSubscriptionStatus();
+  }, []);
+
+  const checkSubscriptionStatus = async () => {
+    try {
+      const response = await paymentService.checkSubscriptionStatus();
+      setSubscriptionStatus(response);
+      if (response.isActive) {
+        // User already has active subscription
+        setSuccess('You already have an active subscription!');
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 2000);
+      }
+    } catch (err) {
+      console.log('Subscription status check error:', err.message);
+    }
+  };
+
+  const verifyPayment = async () => {
+    if (!paymentId) {
+      setError('Please enter a payment ID to verify');
+      return;
+    }
+
+    setVerifying(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await paymentService.verifyPaymentStatus(paymentId);
+      
+      if (response.isPaid) {
+        setSuccess('✅ Payment verified successfully! Subscription activated.');
+        const updatedUser = { ...user, isSubscribed: true };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 2000);
+      } else {
+        setError('Payment not yet confirmed. Status: ' + response.status);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Payment verification failed');
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,22 +74,20 @@ const Payment = () => {
     setSuccess('');
 
     try {
-        // For offline/dev: simulate the payment and confirm on backend mock endpoint
-        setSuccess('Payment initiated! Simulating confirmation...');
+        setSuccess('Payment initiated! Simulating M-Pesa payment...');
+        setPaymentId('MOCK-' + Date.now());
 
-        // Call mock confirm endpoint to mark subscription server-side (if available)
+        // Call mock confirm endpoint to mark subscription server-side
         try {
           await paymentService.confirmMockPayment();
         } catch (err) {
           console.log('Mock payment confirmation error (expected in some cases):', err.message);
-          // ignore errors; still proceed to mark locally
         }
 
         // Mark user subscribed in local storage and redirect
         const updatedUser = { ...user, isSubscribed: true };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         
-        // Wait a moment for user to see success message, then navigate
         setTimeout(() => {
           navigate('/', { replace: true });
         }, 1500);
@@ -79,6 +132,14 @@ const Payment = () => {
         {error && <p className="error-message">{error}</p>}
         {success && <p className="success-message">{success}</p>}
 
+        {subscriptionStatus && subscriptionStatus.isActive && (
+          <div className="subscription-active-box">
+            <h3>✅ Active Subscription</h3>
+            <p>Your subscription is active until: {new Date(subscriptionStatus.subscriptionExpiryDate).toLocaleDateString()}</p>
+            <p>Days Remaining: <strong>{subscriptionStatus.daysRemaining}</strong></p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Phone Number (M-Pesa)</label>
@@ -97,6 +158,31 @@ const Payment = () => {
           </button>
         </form>
 
+        <div className="payment-divider">
+          <span>Already Paid?</span>
+        </div>
+
+        <div className="verify-payment-section">
+          <h3>🔍 Verify Payment Status</h3>
+          <p>Enter your payment ID to check if your payment has been confirmed:</p>
+          <div className="verify-form">
+            <input
+              type="text"
+              placeholder="Enter Payment ID (e.g., MOCK-1234567890)"
+              value={paymentId}
+              onChange={(e) => setPaymentId(e.target.value)}
+            />
+            <button 
+              type="button" 
+              onClick={verifyPayment}
+              disabled={verifying}
+              className="btn btn-secondary"
+            >
+              {verifying ? 'Verifying...' : '✓ Verify Payment'}
+            </button>
+          </div>
+        </div>
+
         <div className="info-box">
           <h4>How it works:</h4>
           <ol>
@@ -104,7 +190,8 @@ const Payment = () => {
             <li>Click "Pay with M-Pesa"</li>
             <li>A prompt will appear on your phone</li>
             <li>Enter your M-Pesa PIN to pay to <strong>{SMARTSTAY_ACCOUNT}</strong></li>
-            <li>Subscription activated!</li>
+            <li>Your subscription will be activated immediately!</li>
+            <li>You can verify payment status anytime using the Payment ID</li>
           </ol>
         </div>
       </div>

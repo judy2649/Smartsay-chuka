@@ -13,6 +13,8 @@ const AdminDashboard = () => {
   const [editingHostelId, setEditingHostelId] = useState(null);
   const [importText, setImportText] = useState('');
   const [importMsg, setImportMsg] = useState('');
+  const [chukhaData, setChukhaData] = useState(null);
+  const [loadingChukhaData, setLoadingChukhaData] = useState(false);
   const [imageModalData, setImageModalData] = useState({ imageUrl: '', imageFile: null, preview: '' });
   const [user] = useState(() => {
     const stored = localStorage.getItem('user');
@@ -51,6 +53,22 @@ const AdminDashboard = () => {
       console.error('Failed to fetch hostels:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadChukhaUniversityData = async () => {
+    setLoadingChukhaData(true);
+    setImportMsg('');
+    try {
+      const response = await api.get('/hostels/template/chuka-data');
+      setChukhaData(response.data);
+      // Auto-populate import field with the data
+      setImportText(JSON.stringify(response.data.hostels, null, 2));
+      setImportMsg(`Loaded ${response.data.hostelsCount} Chuka University hostels. Click "Import" to add them.`);
+    } catch (err) {
+      setImportMsg('Failed to load Chuka data: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setLoadingChukhaData(false);
     }
   };
 
@@ -225,6 +243,13 @@ const AdminDashboard = () => {
             }}
           >
             📥 Import Hostels
+          </button>
+          <button 
+            className="btn-action"
+            onClick={loadChukhaUniversityData}
+            disabled={loadingChukhaData}
+          >
+            {loadingChukhaData ? '⏳ Loading...' : '🏫 Load Chuka Data'}
           </button>
           <p className="hostel-count">Total Hostels: {hostels.length}</p>
         </div>
