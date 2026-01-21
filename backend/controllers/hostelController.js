@@ -1,5 +1,5 @@
 const Hostel = require('../models/Hostel');
-const { uploadToCloudinary } = require('../config/cloudinary');
+const { uploadImage, uploadFromUrl } = require('../config/cloudinary');
 
 // Mock hostel data for Chuka University
 const mockHostels = [
@@ -265,17 +265,17 @@ exports.addReview = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-// Update hostel image (admin only)
+// Update hostel image (admin only) - upload to Cloudinary
 exports.updateHostelImage = async (req, res) => {
   try {
     const { id } = req.params;
-    const { image, imageUrl } = req.body;
+    const { imageUrl, imageBase64 } = req.body;
 
     if (!req.user || !req.user.isAdmin) {
       return res.status(403).json({ message: 'Admin access required' });
     }
 
-    if (!image && !imageUrl) {
+    if (!imageUrl && !imageBase64) {
       return res.status(400).json({ message: 'No image provided' });
     }
 
@@ -285,35 +285,39 @@ exports.updateHostelImage = async (req, res) => {
       return res.status(404).json({ message: 'Hostel not found' });
     }
 
-    let imageUrlToSave = imageUrl;
+    let uploadResult;
 
-    // If base64 image provided, upload to Cloudinary
-    if (image && image.startsWith('data:image')) {
+    // If base64 image, convert and upload
+    if (imageBase64) {
       try {
         // Convert base64 to buffer
-        const base64Data = image.replace(/^data:image\/[a-z]+;base64,/, '');
-        const buffer = Buffer.from(base64Data, 'base64');
-        
-        // Upload to Cloudinary
-        imageUrlToSave = await uploadToCloudinary(buffer, `hostel-${id}-${Date.now()}`);
-      } catch (uploadError) {
-        console.error('Cloudinary upload error:', uploadError);
-        return res.status(500).json({ 
-          message: 'Failed to upload image to cloud storage',
-          error: uploadError.message 
-        });
+        const buffer = Buffer.from(imageBase64.split(',')[1] || imageBase64, 'base64');
+        uploadResult = await uploadImage(buffer, `${hostel.name.replace(/\s+/g, '-')}-${Date.now()}`);
+        hostel.image = uploadResult.secure_url;
+      } catch (uploadErr) {
+        console.error('Cloudinary upload error:', uploadErr);
+        // Fallback to base64 if Cloudinary fails
+        hostel.image = imageBase64;
+      }
+    } else if (imageUrl) {
+      // If URL provided, fetch and upload to Cloudinary
+      try {
+        uploadResult = await uploadFromUrl(imageUrl, hostel.name.replace(/\s+/g, '-'));
+        hostel.image = uploadResult.secure_url;
+      } catch (uploadErr) {
+        console.error('Cloudinary upload from URL error:', uploadErr);
+        // Fallback to direct URL if Cloudinary fails
+        hostel.image = imageUrl;
       }
     }
-
-    // Update hostel image URL in mock data
-    hostel.image = imageUrlToSave;
 
     res.json({ 
       message: 'Hostel image updated successfully', 
       hostel,
-      imageUrl: imageUrlToSave
+      imageUrl: hostel.image
     });
   } catch (error) {
+    console.error('Update image error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

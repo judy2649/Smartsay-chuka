@@ -173,8 +173,10 @@ const AdminDashboard = () => {
     try {
       const payload = {};
       if (imageModalData.imageFile) {
-        payload.image = imageModalData.imageFile;
+        // Send base64 encoded image
+        payload.imageBase64 = imageModalData.imageFile;
       } else if (imageModalData.imageUrl) {
+        // Send URL for Cloudinary to download and process
         payload.imageUrl = imageModalData.imageUrl;
       }
 
@@ -182,7 +184,7 @@ const AdminDashboard = () => {
       setShowImageModal(false);
       setImageModalData({ imageUrl: '', imageFile: null, preview: '' });
       fetchHostels();
-      alert('Image updated successfully!');
+      alert('Image updated successfully! (Uploading to cloud storage...)');
     } catch (err) {
       console.error('Failed to update image:', err);
       alert('Failed to update image: ' + (err.response?.data?.message || err.message));
