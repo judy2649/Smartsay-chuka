@@ -10,6 +10,7 @@ const Home = () => {
   const [error, setError] = useState('');
   const user = JSON.parse(localStorage.getItem('user'));
   const isSubscribed = user?.isSubscribed;
+  const isAdmin = user?.isAdmin;
 
   useEffect(() => {
     fetchHostels();
@@ -34,7 +35,7 @@ const Home = () => {
     }
   };
 
-  if (!isSubscribed) {
+  if (!isSubscribed && !isAdmin) {
     return (
       <div className="subscription-prompt">
         <div className="subscription-card">
