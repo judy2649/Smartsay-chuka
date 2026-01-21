@@ -62,7 +62,7 @@ function App() {
           <>
             <Navbar />
             <Routes>
-              <Route path="payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+              <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
               <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
