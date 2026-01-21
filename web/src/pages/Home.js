@@ -9,8 +9,6 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const user = JSON.parse(localStorage.getItem('user'));
-  const isSubscribed = user?.isSubscribed;
-  const isAdmin = user?.isAdmin;
 
   useEffect(() => {
     fetchHostels();
@@ -22,32 +20,14 @@ const Home = () => {
       setHostels(response.data || response.data?.hostels || []);
     } catch (err) {
       console.error('Error fetching hostels:', err);
-      // If 402 (subscription required), show subscription prompt instead of error
-      if (err.response?.status === 402) {
-        // User will see subscription prompt from the component logic
-        setHostels([]);
-      } else {
-        const errorMsg = err.response?.data?.message || err.message || 'Failed to load hostels';
-        setError(errorMsg);
-      }
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to load hostels';
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
-  if (!isSubscribed && !isAdmin) {
-    return (
-      <div className="subscription-prompt">
-        <div className="subscription-card">
-          <h2>🔒 Unlock SMARTSTAY CHUKA</h2>
-          <p>Subscribe to view all hostels and their information</p>
-          <p className="price">KES 263 for 30 days</p>
-          <button onClick={() => navigate('/payment')} className="btn btn-primary">Subscribe Now</button>
-        </div>
-      </div>
-    );
-  }
-
+  // This component is only rendered if user is subscribed or admin (routing enforces this)
   return (
     <div className="home-container">
       <div className="home-header">

@@ -38,6 +38,22 @@ function App() {
     return currentUser ? children : <Navigate to="/login" />;
   };
 
+  const SubscriptionRequiredRoute = ({ children }) => {
+    const currentUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : user;
+    if (loading) return <div>Loading...</div>;
+    
+    // Not logged in - go to login
+    if (!currentUser) return <Navigate to="/login" />;
+    
+    // Logged in but not subscribed and not admin - force to payment
+    if (!currentUser.isSubscribed && !currentUser.isAdmin) {
+      return <Navigate to="/payment" replace />;
+    }
+    
+    // Subscribed or admin - allow access
+    return children;
+  };
+
   const AdminRoute = ({ children }) => {
     if (loading) return <div>Loading...</div>;
     const storedUser = localStorage.getItem('user');
@@ -63,7 +79,7 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-              <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+              <Route path="/" element={<SubscriptionRequiredRoute><Home /></SubscriptionRequiredRoute>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </>

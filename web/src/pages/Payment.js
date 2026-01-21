@@ -50,18 +50,22 @@ const Payment = () => {
       const response = await paymentService.verifyPaymentStatus(paymentId);
       
       if (response.isPaid) {
-        setSuccess('✅ Payment verified successfully! Subscription activated.');
+        setSuccess('✅ Payment verified successfully! Updating your subscription...');
+        
+        // Update user subscription status
         const updatedUser = { ...user, isSubscribed: true };
         localStorage.setItem('user', JSON.stringify(updatedUser));
+        
+        console.log('✅ Payment confirmed, redirecting to hostels...');
         
         setTimeout(() => {
           navigate('/', { replace: true });
         }, 2000);
       } else {
-        setError('Payment not yet confirmed. Status: ' + response.status);
+        setError('❌ Payment not confirmed. Status: ' + response.status + '\n\nPlease complete the M-Pesa payment and try again.');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Payment verification failed');
+      setError('❌ Payment verification failed: ' + (err.response?.data?.message || err.message) + '\n\nPlease try again or contact support.');
     } finally {
       setVerifying(false);
     }
