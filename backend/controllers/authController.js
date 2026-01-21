@@ -186,7 +186,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    console.log('✅ Login successful:', email, '| isAdmin:', user.isAdmin);
+    console.log('✅ Login successful:', email, '| isAdmin:', user.isAdmin, '| isSubscribed:', user.isSubscribed);
 
     // Generate JWT token
     const token = jwt.sign(
@@ -195,18 +195,23 @@ exports.login = async (req, res) => {
       { expiresIn: '30d' }
     );
 
+    // Admins are always subscribed and bypass payment
+    const responseUser = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      isSubscribed: user.isAdmin ? true : (user.isSubscribed || false),
+      isAdmin: user.isAdmin || false
+    };
+
+    console.log('📤 Response user:', { email: responseUser.email, isAdmin: responseUser.isAdmin, isSubscribed: responseUser.isSubscribed });
+
     res.json({
       message: 'Login successful',
       token,
-      user: {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        isSubscribed: user.isSubscribed || false,
-        isAdmin: user.isAdmin || false
-      }
+      user: responseUser
     });
   } catch (error) {
     console.error('❌ Login error:', error);
@@ -255,17 +260,22 @@ exports.adminLogin = async (req, res) => {
       { expiresIn: '30d' }
     );
 
+    // Admins always bypass payment
+    const responseUser = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      isAdmin: true,
+      isSubscribed: true
+    };
+
+    console.log('📤 Admin response:', { email: responseUser.email, isAdmin: responseUser.isAdmin, isSubscribed: responseUser.isSubscribed });
+
     res.json({
       message: 'Admin login successful',
       token,
-      user: {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isSubscribed: user.isSubscribed
-      }
+      user: responseUser
     });
   } catch (error) {
     console.error('❌ Admin login error:', error);
