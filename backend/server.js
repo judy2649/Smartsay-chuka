@@ -110,7 +110,7 @@ app.get('/api/test/mock', (req, res) => {
 });
 
 // Test endpoint - login with mock admin
-app.post('/api/test/admin-login', (req, res) => {
+app.get('/api/test/admin-login', (req, res) => {
   const mockData = require('./utils/mockDatabase');
   const admin = mockData.users.find(u => u.isAdmin);
   if (admin) {
