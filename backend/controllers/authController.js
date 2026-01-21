@@ -1,23 +1,41 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { User } = require('../models/database');
+const mockDatabase = require('../utils/mockDatabase');
+
+// Flag to track if database is available
+let isDatabaseAvailable = true;
 
 // Helper functions for database operations
 const findUserById = async (id) => {
   try {
-    return await User.findByPk(id);
+    const user = await User.findByPk(id);
+    if (user) {
+      isDatabaseAvailable = true;
+      return user;
+    }
   } catch (err) {
-    console.error('Error finding user by ID:', err);
-    return null;
+    console.warn('Database unavailable, using mock data');
+    isDatabaseAvailable = false;
+    // Return from mock database
+    const mockUser = mockDatabase.users.find(u => u.id === id);
+    return mockUser || null;
   }
 };
 
 const findUserByEmail = async (email) => {
   try {
-    return await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+      isDatabaseAvailable = true;
+      return user;
+    }
   } catch (err) {
-    console.error('Error finding user by email:', err);
-    return null;
+    console.warn('Database unavailable, using mock data');
+    isDatabaseAvailable = false;
+    // Return from mock database
+    const mockUser = mockDatabase.users.find(u => u.email === email);
+    return mockUser || null;
   }
 };
 
@@ -54,40 +72,61 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // If database available, use it
+    if (isDatabaseAvailable) {
+      try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await User.create({
+          firstName,
+          lastName,
+          email,
+          phoneNumber: phoneNumber || '',
+          password: hashedPassword,
+          isSubscribed: false,
+          isAdmin: false
+        });
 
-    // Create new user
-    const newUser = await User.create({
-      firstName,
-      lastName,
-      email,
-      phoneNumber: phoneNumber || '',
-      password: hashedPassword,
-      isSubscribed: false,
-      isAdmin: false
-    });
+        const token = jwt.sign(
+          { id: newUser.id, email: newUser.email },
+          process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345',
+          { expiresIn: '30d' }
+        );
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: newUser.id, email: newUser.email },
-      process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345',
-      { expiresIn: '30d' }
-    );
-
-    res.status(201).json({
-      message: 'User registered successfully',
-      token,
-      user: {
-        id: newUser.id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        phoneNumber: newUser.phoneNumber,
-        isSubscribed: newUser.isSubscribed,
-        isAdmin: newUser.isAdmin
+        return res.status(201).json({
+          message: 'User registered successfully',
+          token,
+          user: { id: newUser.id, firstName, lastName, email, phoneNumber }
+        });
+      } catch (error) {
+        throw error;
       }
-    });
+    } else {
+      // Use mock database
+      const newMockUser = {
+        id: String(mockDatabase.users.length + 1),
+        firstName,
+        lastName,
+        email,
+        phoneNumber: phoneNumber || '',
+        password, // Store as-is for mock
+        isSubscribed: false,
+        isAdmin: false,
+        createdAt: new Date()
+      };
+      mockDatabase.users.push(newMockUser);
+
+      const token = jwt.sign(
+        { id: newMockUser.id, email: newMockUser.email },
+        process.env.JWT_SECRET || 'smartstay_chuka_secret_key_12345',
+        { expiresIn: '30d' }
+      );
+
+      return res.status(201).json({
+        message: 'User registered successfully (mock data)',
+        token,
+        user: { id: newMockUser.id, firstName, lastName, email, phoneNumber }
+      });
+    }
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -109,8 +148,16 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare passwords
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Check password (handle both hashed and mock plain text)
+    let isPasswordValid = false;
+    if (isDatabaseAvailable && user.password.startsWith('$2')) {
+      // Database user with hashed password
+      isPasswordValid = await bcrypt.compare(password, user.password);
+    } else {
+      // Mock user with plain text password (for testing)
+      isPasswordValid = password === user.password;
+    }
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
